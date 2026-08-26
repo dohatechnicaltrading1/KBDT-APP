@@ -1,0 +1,7 @@
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#A1233B</item>
+        <item name="colorPrimaryDark">#7A1A2C</item>
+        <item name="colorAccent">#A1233B</item>
+    </style>
+</resources>
