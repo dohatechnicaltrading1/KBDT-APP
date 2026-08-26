@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kashinagar Blood Donation Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#a1233b;
+  --red-dark:#7a1a2c;
+  --red-soft:#f6e4e7;
+  --ink:#20232b;
+  --ink-soft:#6b7078;
+  --paper:#faf8f5;
+  --card:#ffffff;
+  --line:#eae5df;
+  --green:#2f8a4e;
+  --yellow:#c98a1f;
+  --grey:#9aa0a8;
+  --radius:14px;
+  --shadow:0 2px 10px rgba(32,35,43,0.06);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+body{margin:0; font-family:'Manrope',sans-serif; background:var(--paper); color:var(--ink); font-size:15px;}
+.bn-active body{font-family:'Hind Siliguri','Manrope',sans-serif;}
+h1,h2,h3,h4{margin:0 0 4px; font-weight:800; letter-spacing:-0.01em;}
+p{margin:0;}
+button{font-family:inherit; cursor:pointer;}
+input,select,textarea{font-family:inherit; font-size:15px;}
+img{max-width:100%; display:block;}
+.hidden{display:none !important;}
+
+#app{max-width:480px; margin:0 auto; min-height:100vh; background:var(--paper); display:flex; flex-direction:column; position:relative;}
+.topbar{background:var(--red); color:#fff; padding:16px 18px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:20;}
+.topbar .brand{display:flex; align-items:center; gap:10px;}
+.topbar .drop{width:26px; height:26px; background:#fff; border-radius:50% 50% 50% 0; transform:rotate(45deg); position:relative; flex:none;}
+.topbar .drop::after{content:'';position:absolute; inset:5px; background:var(--red); border-radius:50% 50% 50% 0;}
+.topbar h1{font-size:16px; color:#fff; line-height:1.15;}
+.topbar .sub{font-size:11px; opacity:.85; font-weight:500;}
+.topbar-actions{display:flex; gap:8px; align-items:center;}
+.langbtn{background:rgba(255,255,255,.18); border:none; color:#fff; padding:6px 10px; border-radius:20px; font-size:12px; font-weight:700;}
+.iconbtn{background:rgba(255,255,255,.18); border:none; color:#fff; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px;}
+
+main{flex:1; padding:16px 16px 90px; overflow-y:auto;}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px; margin-bottom:12px; box-shadow:var(--shadow);}
+.section-title{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); font-weight:700; margin:18px 0 8px;}
+.stat-row{display:flex; gap:10px;}
+.stat{flex:1; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px; text-align:center; box-shadow:var(--shadow);}
+.stat .num{font-size:22px; font-weight:800; color:var(--red);}
+.stat .lbl{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; background:var(--red); color:#fff; border:none; padding:12px 18px; border-radius:10px; font-weight:700; font-size:14px; width:100%;}
+.btn:active{background:var(--red-dark);}
+.btn.secondary{background:var(--red-soft); color:var(--red-dark);}
+.btn.outline{background:transparent; color:var(--red); border:1.5px solid var(--red);}
+.btn.small{width:auto; padding:8px 14px; font-size:13px;}
+.btn.ghost{background:var(--paper); color:var(--ink); border:1px solid var(--line);}
+.btn-row{display:flex; gap:8px;}
+.btn[disabled]{opacity:.5;}
+
+.field{margin-bottom:12px;}
+.field label{display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin-bottom:5px;}
+.field input, .field select, .field textarea{width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:10px; background:#fff; color:var(--ink);}
+.field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--red);}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+
+.badge{display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px;}
+.badge.eligible{background:#e4f4e9; color:var(--green);}
+.badge.soon{background:#fbf0dc; color:var(--yellow);}
+.badge.not_yet{background:#f0f0f0; color:var(--grey);}
+.badge.pending{background:#fbf0dc; color:var(--yellow);}
+.badge.approved{background:#e4f4e9; color:var(--green);}
+.badge.rejected{background:#fbe4e6; color:var(--red);}
+
+.donor-row{display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--line);}
+.donor-row:last-child{border-bottom:none;}
+.avatar{width:42px; height:42px; border-radius:50%; background:var(--red-soft); color:var(--red-dark); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex:none; overflow:hidden;}
+.avatar img{width:100%; height:100%; object-fit:cover;}
+.donor-row .info{flex:1; min-width:0;}
+.donor-row .name{font-weight:700; font-size:14px;}
+.donor-row .meta{font-size:12px; color:var(--ink-soft);}
+.bg-tag{background:var(--red); color:#fff; font-size:11px; font-weight:800; padding:2px 7px; border-radius:6px;}
+
+.bottomnav{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:#fff; border-top:1px solid var(--line); display:flex; z-index:30; padding:6px 2px calc(6px + env(safe-area-inset-bottom));}
+.navitem{flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 2px; background:none; border:none; color:var(--ink-soft); font-size:10px; font-weight:700;}
+.navitem .ic{font-size:19px;}
+.navitem.active{color:var(--red);}
+
+.auth-wrap{padding:40px 24px 24px; min-height:100vh; display:flex; flex-direction:column;}
+.auth-hero{text-align:center; margin-bottom:26px;}
+.auth-hero .drop-lg{width:56px; height:56px; background:var(--red); border-radius:50% 50% 50% 0; transform:rotate(45deg); margin:0 auto 18px;}
+.auth-hero h1{font-size:21px; color:var(--red-dark);}
+.auth-hero p{font-size:13px; color:var(--ink-soft); margin-top:4px;}
+.tab-switch{display:flex; background:var(--red-soft); border-radius:12px; padding:4px; margin-bottom:20px;}
+.tab-switch button{flex:1; padding:10px; border:none; background:none; border-radius:9px; font-weight:700; font-size:13px; color:var(--red-dark);}
+.tab-switch button.active{background:var(--red); color:#fff;}
+
+.tag-pill{display:inline-block; padding:8px 12px; border:1.5px solid var(--line); border-radius:20px; font-size:13px; font-weight:700; margin:0 6px 6px 0; color:var(--ink);}
+.tag-pill.active{background:var(--red); color:#fff; border-color:var(--red);}
+.pill-row{display:flex; flex-wrap:wrap;}
+
+.toast{position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--ink); color:#fff; padding:11px 18px; border-radius:10px; font-size:13px; z-index:100; box-shadow:0 4px 14px rgba(0,0,0,.25); max-width:90%; text-align:center;}
+
+.empty{text-align:center; padding:30px 10px; color:var(--ink-soft);}
+.empty .ic{font-size:34px; margin-bottom:8px;}
+
+.modal-overlay{position:fixed; inset:0; background:rgba(20,20,20,.5); z-index:200; display:flex; align-items:flex-end; justify-content:center;}
+.modal{background:#fff; width:100%; max-width:480px; border-radius:18px 18px 0 0; padding:20px; max-height:88vh; overflow-y:auto;}
+.modal-handle{width:40px; height:4px; background:var(--line); border-radius:3px; margin:0 auto 16px;}
+.modal h3{margin-bottom:14px;}
+
+.list-item-actions{display:flex; gap:6px; margin-top:8px;}
+.list-item-actions .btn{width:auto; padding:6px 12px; font-size:12px;}
+
+.gallery-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+.gallery-grid img{width:100%; height:110px; object-fit:cover; border-radius:10px;}
+
+.quiz-option{display:block; width:100%; text-align:left; padding:12px 14px; border:1.5px solid var(--line); border-radius:10px; margin-bottom:8px; background:#fff; font-size:14px;}
+.quiz-option.selected{border-color:var(--red); background:var(--red-soft);}
+.quiz-option.correct{border-color:var(--green); background:#e4f4e9;}
+.quiz-option.incorrect{border-color:var(--red); background:#fbe4e6;}
+
+.member-card{display:flex; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);}
+.member-card:last-child{border-bottom:none;}
+.member-card .avatar{width:50px; height:50px; font-size:16px;}
+
+.role-badge{font-size:10px; font-weight:800; padding:2px 8px; border-radius:8px; text-transform:uppercase;}
+.role-badge.admin{background:#2a2f3a; color:#fff;}
+.role-badge.organizer{background:var(--red); color:#fff;}
+.role-badge.donor{background:var(--red-soft); color:var(--red-dark);}
+
+.card-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+.link-btn{background:none; border:none; color:var(--red); font-weight:700; font-size:13px; padding:0;}
+
+.spinner{width:22px; height:22px; border:3px solid var(--red-soft); border-top-color:var(--red); border-radius:50%; animation:spin .7s linear infinite; margin:20px auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.photocard-preview{background:linear-gradient(135deg,var(--red),var(--red-dark)); color:#fff; border-radius:18px; padding:22px; text-align:center; margin-bottom:14px;}
+.photocard-preview .drop-lg{background:#fff;}
+.photocard-preview h2{color:#fff; font-size:18px;}
+.photocard-preview .num{font-size:32px; font-weight:800; margin:8px 0;}
+.photocard-preview .sub{font-size:12px; opacity:.85;}
+
+.announcement{background:#fff7e6; border:1px solid #f0d99b; color:#8a6415; padding:10px 12px; border-radius:10px; font-size:12.5px; margin-bottom:12px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="toast" class="toast hidden"></div>
+
+  <div id="screen-auth">
+    <div class="auth-wrap">
+      <button class="langbtn" style="align-self:flex-end; color:var(--red); background:var(--red-soft);" onclick="toggleLang()"><span id="langLabelAuth">বাংলা</span></button>
+      <div class="auth-hero">
+        <div class="drop-lg"></div>
+        <h1 data-i18n="orgName">Kashinagar Blood Donation Team</h1>
+        <p data-i18n="tagline">Connecting donors. Saving lives.</p>
+      </div>
+      <div class="tab-switch">
+        <button id="tabLogin" class="active" onclick="switchAuthTab('login')" data-i18n="login">Log In</button>
+        <button id="tabSignup" onclick="switchAuthTab('signup')" data-i18n="signup">Sign Up</button>
+      </div>
+
+      <div id="loginForm">
+        <div class="field">
+          <label data-i18n="mobileOrEmailOrUsername">Mobile / Email / Username</label>
+          <input id="loginIdentifier" type="text" placeholder="01XXXXXXXXX">
+        </div>
+        <div class="field">
+          <label data-i18n="password">Password</label>
+          <input id="loginPassword" type="password" placeholder="••••••••">
+        </div>
+        <button class="btn" onclick="doLogin()" data-i18n="login">Log In</button>
+        <button class="link-btn" style="display:block; margin:14px auto 0;" onclick="openForgotPassword()" data-i18n="forgotPassword">Forgot password?</button>
+      </div>
+
+      <div id="signupForm" class="hidden">
+        <div class="field"><label data-i18n="fullName">Full Name</label><input id="suName" type="text"></div>
+        <div class="two-col">
+          <div class="field"><label data-i18n="bloodGroup">Blood Group</label>
+            <select id="suBloodGroup"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select>
+          </div>
+          <div class="field"><label data-i18n="age">Age</label><input id="suAge" type="number"></div>
+        </div>
+        <div class="field"><label data-i18n="mobile">Mobile Number</label><input id="suMobile" type="text" placeholder="01XXXXXXXXX"></div>
+        <div class="field"><label data-i18n="email">Email (optional)</label><input id="suEmail" type="email"></div>
+        <div class="two-col">
+          <div class="field"><label data-i18n="gender">Gender</label>
+            <select id="suGender"><option data-i18n="male">Male</option><option data-i18n="female">Female</option><option data-i18n="other">Other</option></select>
+          </div>
+          <div class="field"><label data-i18n="password">Password</label><input id="suPassword" type="password"></div>
+        </div>
+        <div class="field"><label data-i18n="presentAddress">Present Address</label><input id="suPresentAddress" type="text" placeholder="Area, City"></div>
+        <div class="field"><label data-i18n="permanentAddress">Permanent Address</label><input id="suPermanentAddress" type="text"></div>
+        <button class="btn" onclick="doSignup()" data-i18n="createAccount">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-main" class="hidden">
+    <div class="topbar">
+      <div class="brand">
+        <div class="drop"></div>
+        <div>
+          <h1 id="topbarTitle" data-i18n="orgName">KBDT</h1>
+          <div class="sub" id="topbarUserLine">—</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="langbtn" onclick="toggleLang()"><span id="langLabelMain">বাংলা</span></button>
+        <button class="iconbtn" onclick="logout()" title="Logout">⎋</button>
+      </div>
+    </div>
+    <main id="mainContent"></main>
+    <div class="bottomnav" id="bottomNav"></div>
+  </div>
+
+  <div id="modalRoot"></div>
+</div>
+
+<script>
+const CONFIG = {
+  API_URL: 'https://script.google.com/macros/s/AKfycbzxooQJBUCHk8GtmHNp3tIXUMbEnGyz8GAlFI4GeMQUtXlAry-aWczGWsuBJjn-pQdQ/exec'
+};
+
+let STATE = {
+  lang: localStorage.getItem('kbdt_lang') || 'en',
+  user: JSON.parse(localStorage.getItem('kbdt_user') || 'null'),
+  tab: null
+};
+
+const I18N = {
+  en: {
+    orgName:'Kashinagar Blood Donation Team', tagline:'Connecting donors. Saving lives.',
+    login:'Log In', signup:'Sign Up', mobileOrEmailOrUsername:'Mobile / Email / Username',
+    password:'Password', forgotPassword:'Forgot password?', fullName:'Full Name',
+    bloodGroup:'Blood Group', age:'Age', mobile:'Mobile Number', email:'Email (optional)',
+    gender:'Gender', male:'Male', female:'Female', other:'Other', presentAddress:'Present Address',
+    permanentAddress:'Permanent Address', createAccount:'Create Account',
+    home:'Home', search:'Search', requests:'Requests', profile:'Profile', more:'More',
+    dashboard:'Dashboard', donors:'Donors', eligibility:'Eligibility', gallery:'Gallery',
+    quiz:'Quiz', about:'About', advisoryBoard:'Advisory Board', committee:'Committee',
+    totalDonors:'Total Donors', totalDonations:'Total Donations', upcomingEligible:'Eligible Soon',
+    searchDonors:'Search Donors', requestContact:'Request Contact Details', requestSent:'Request sent',
+    myRequests:'My Requests', pending:'Pending', approved:'Approved', rejected:'Rejected',
+    editProfile:'Edit Profile', save:'Save', myDonationHistory:'My Donation History',
+    nextEligible:'Next Eligible', eligibleNow:'Eligible Now', notYetEligible:'Not Yet Eligible',
+    eligibleSoon:'Eligible Soon', facebookPage:'Visit Facebook Page', logout:'Log Out',
+    donorManagement:'Donor Management', addDonor:'Add Donor', recordDonation:'Record Donation',
+    eligibilityTracker:'Eligibility Tracker', requestsQueue:'Requests Queue', approve:'Approve',
+    reject:'Reject', photoCardGenerator:'Photo Card Generator', generateCard:'Generate Card',
+    quizManagement:'Quiz Management', createQuiz:'Create Quiz', addQuestion:'Add Question',
+    manageOrganizers:'Manage Organizers', addOrganizer:'Add Organizer', settings:'Settings',
+    donationDate:'Donation Date', location:'Location', notes:'Notes', save_:'Save',
+    noDataYet:'Nothing here yet', close:'Close', cancel:'Cancel', submit:'Submit',
+    changePassword:'Change Password', currentPassword:'Current Password', newPassword:'New Password',
+    exportCsv:'Export Donor List (CSV)', username:'Username', tempPassword:'Temporary Password',
+    isActive:'Active', deactivate:'Deactivate', reactivate:'Reactivate', delete:'Delete', edit:'Edit',
+    yourScore:'Your Score', playQuiz:'Play Quiz', publish:'Publish', unpublish:'Unpublish',
+    correct:'Correct', totalDonationsOrg:'this is your donation #', place:'Place / Location',
+    quote:'Message / Quote (optional)', download:'Download', donationNumber:'Donation #',
+    orgAnnouncement:'Announcement', name:'Name', designation:'Designation', role:'Role',
+    photoUrl:'Photo URL', bio:'Short Bio', addMember:'Add Member', requestNote:'Note (optional)',
+    noResultsFound:'No results found', requestedOn:'Requested on', resolvedNote:'Note',
+    contactUnlocked:'Contact details unlocked', mobileLabel:'Mobile', addressLabel:'Address'
+  },
+  bn: {
+    orgName:'কাশিনগর ব্লাড ডোনেশন টিম', tagline:'দাতাদের সংযুক্ত করা। জীবন বাঁচানো।',
+    login:'লগ ইন', signup:'সাইন আপ', mobileOrEmailOrUsername:'মোবাইল / ইমেইল / ইউজারনেম',
+    password:'পাসওয়ার্ড', forgotPassword:'পাসওয়ার্ড ভুলে গেছেন?', fullName:'পূর্ণ নাম',
+    bloodGroup:'রক্তের গ্রুপ', age:'বয়স', mobile:'মোবাইল নম্বর', email:'ইমেইল (ঐচ্ছিক)',
+    gender:'লিঙ্গ', male:'পুরুষ', female:'মহিলা', other:'অন্যান্য', presentAddress:'বর্তমান ঠিকানা',
+    permanentAddress:'স্থায়ী ঠিকানা', createAccount:'অ্যাকাউন্ট তৈরি করুন',
+    home:'হোম', search:'খুঁজুন', requests:'অনুরোধ', profile:'প্রোফাইল', more:'আরও',
+    dashboard:'ড্যাশবোর্ড', donors:'দাতারা', eligibility:'যোগ্যতা', gallery:'গ্যালারি',
+    quiz:'কুইজ', about:'পরিচিতি', advisoryBoard:'উপদেষ্টা বোর্ড', committee:'কমিটি',
+    totalDonors:'মোট দাতা', totalDonations:'মোট রক্তদান', upcomingEligible:'শীঘ্রই যোগ্য',
+    searchDonors:'দাতা খুঁজুন', requestContact:'যোগাযোগের তথ্য অনুরোধ করুন', requestSent:'অনুরোধ পাঠানো হয়েছে',
+    myRequests:'আমার অনুরোধ', pending:'বিচারাধীন', approved:'অনুমোদিত', rejected:'প্রত্যাখ্যাত',
+    editProfile:'প্রোফাইল সম্পাদনা', save:'সংরক্ষণ করুন', myDonationHistory:'আমার রক্তদানের ইতিহাস',
+    nextEligible:'পরবর্তী যোগ্যতার তারিখ', eligibleNow:'এখন যোগ্য', notYetEligible:'এখনো যোগ্য নয়',
+    eligibleSoon:'শীঘ্রই যোগ্য', facebookPage:'ফেসবুক পেজ দেখুন', logout:'লগ আউট',
+    donorManagement:'দাতা ব্যবস্থাপনা', addDonor:'দাতা যোগ করুন', recordDonation:'রক্তদান রেকর্ড করুন',
+    eligibilityTracker:'যোগ্যতা ট্র্যাকার', requestsQueue:'অনুরোধের সারি', approve:'অনুমোদন',
+    reject:'প্রত্যাখ্যান', photoCardGenerator:'ফটো কার্ড জেনারেটর', generateCard:'কার্ড তৈরি করুন',
+    quizManagement:'কুইজ ব্যবস্থাপনা', createQuiz:'কুইজ তৈরি করুন', addQuestion:'প্রশ্ন যোগ করুন',
+    manageOrganizers:'অর্গানাইজার পরিচালনা', addOrganizer:'অর্গানাইজার যোগ করুন', settings:'সেটিংস',
+    donationDate:'রক্তদানের তারিখ', location:'স্থান', notes:'নোট', save_:'সংরক্ষণ করুন',
+    noDataYet:'এখনো কিছু নেই', close:'বন্ধ করুন', cancel:'বাতিল', submit:'জমা দিন',
+    changePassword:'পাসওয়ার্ড পরিবর্তন করুন', currentPassword:'বর্তমান পাসওয়ার্ড', newPassword:'নতুন পাসওয়ার্ড',
+    exportCsv:'দাতা তালিকা এক্সপোর্ট (CSV)', username:'ইউজারনেম', tempPassword:'সাময়িক পাসওয়ার্ড',
+    isActive:'সক্রিয়', deactivate:'নিষ্ক্রিয় করুন', reactivate:'পুনরায় সক্রিয় করুন', delete:'মুছুন', edit:'সম্পাদনা',
+    yourScore:'আপনার স্কোর', playQuiz:'কুইজ খেলুন', publish:'প্রকাশ করুন', unpublish:'অপ্রকাশিত করুন',
+    correct:'সঠিক', totalDonationsOrg:'এটি আপনার রক্তদান #', place:'স্থান',
+    quote:'বার্তা / উক্তি (ঐচ্ছিক)', download:'ডাউনলোড', donationNumber:'রক্তদান #',
+    orgAnnouncement:'ঘোষণা', name:'নাম', designation:'পদবী', role:'ভূমিকা',
+    photoUrl:'ছবির URL', bio:'সংক্ষিপ্ত বিবরণ', addMember:'সদস্য যোগ করুন', requestNote:'নোট (ঐচ্ছিক)',
+    noResultsFound:'কোন ফলাফল পাওয়া যায়নি', requestedOn:'অনুরোধের তারিখ', resolvedNote:'নোট',
+    contactUnlocked:'যোগাযোগের তথ্য উন্মুক্ত হয়েছে', mobileLabel:'মোবাইল', addressLabel:'ঠিকানা'
+  }
+};
+function t(key){ return (I18N[STATE.lang] && I18N[STATE.lang][key]) || I18N.en[key] || key; }
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.getElementById('langLabelAuth').textContent = STATE.lang==='en' ? 'বাংলা' : 'English';
+  document.getElementById('langLabelMain').textContent = STATE.lang==='en' ? 'বাংলা' : 'English';
+  document.body.classList.toggle('bn-active', STATE.lang==='bn');
+}
+function toggleLang(){
+  STATE.lang = STATE.lang === 'en' ? 'bn' : 'en';
+  localStorage.setItem('kbdt_lang', STATE.lang);
+  applyI18n();
+  if(STATE.user) renderTab(STATE.tab);
+}
+
+function api(action, data){
+  data = data || {};
+  if(STATE.user){ data.requesterId = data.requesterId || STATE.user.id; data.requesterRole = data.requesterRole || STATE.user.role; }
+  return fetch(CONFIG.API_URL, {
+    method:'POST',
+    body: JSON.stringify({ action, data })
+  }).then(r=>r.json()).catch(err=>({error:'Network error. Check your connection.'}));
+}
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>el.classList.add('hidden'), 2600);
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML = ''; }
+function openModal(html){
+  document.getElementById('modalRoot').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modal-handle"></div>${html}</div></div>`;
+}
+
+function switchAuthTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('tabSignup').classList.toggle('active', tab==='signup');
+  document.getElementById('loginForm').classList.toggle('hidden', tab!=='login');
+  document.getElementById('signupForm').classList.toggle('hidden', tab!=='signup');
+}
+async function doLogin(){
+  const identifier = document.getElementById('loginIdentifier').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if(!identifier || !password) return showToast(STATE.lang==='en'?'Please fill all fields':'সব ঘর পূরণ করুন');
+  const res = await api('login', { identifier, password });
+  if(res.error) return showToast(res.error);
+  STATE.user = res.user;
+  localStorage.setItem('kbdt_user', JSON.stringify(res.user));
+  enterApp();
+}
+async function doSignup(){
+  const payload = {
+    name: document.getElementById('suName').value.trim(),
+    bloodGroup: document.getElementById('suBloodGroup').value,
+    age: document.getElementById('suAge').value,
+    mobile: document.getElementById('suMobile').value.trim(),
+    email: document.getElementById('suEmail').value.trim(),
+    gender: document.getElementById('suGender').value,
+    password: document.getElementById('suPassword').value,
+    presentAddress: document.getElementById('suPresentAddress').value.trim(),
+    permanentAddress: document.getElementById('suPermanentAddress').value.trim()
+  };
+  if(!payload.name || !payload.mobile || !payload.password) return showToast(STATE.lang==='en'?'Name, mobile and password are required':'নাম, মোবাইল ও পাসওয়ার্ড আবশ্যক');
+  const res = await api('signup', payload);
+  if(res.error) return showToast(res.error);
+  STATE.user = res.user;
+  localStorage.setItem('kbdt_user', JSON.stringify(res.user));
+  enterApp();
+}
+function openForgotPassword(){
+  openModal(`
+    <h3 data-i18n="forgotPassword">Forgot password?</h3>
+    <div class="field"><label data-i18n="mobileOrEmailOrUsername">Mobile / Email</label><input id="fpIdentifier" type="text"></div>
+    <div class="field"><label data-i18n="newPassword">New Password</label><input id="fpNewPassword" type="password"></div>
+    <button class="btn" onclick="submitForgotPassword()" data-i18n="submit">Submit</button>
+  `);
+  applyI18n();
+}
+async function submitForgotPassword(){
+  const identifier = document.getElementById('fpIdentifier').value.trim();
+  const newPassword = document.getElementById('fpNewPassword').value;
+  const res = await api('forgotPassword', { identifier, newPassword });
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Password updated. Please log in.':'পাসওয়ার্ড আপডেট হয়েছে। লগ ইন করুন।');
+  closeModal();
+}
+function logout(){
+  STATE.user = null;
+  localStorage.removeItem('kbdt_user');
+  document.getElementById('screen-main').classList.add('hidden');
+  document.getElementById('screen-auth').classList.remove('hidden');
+}
+
+function enterApp(){
+  document.getElementById('screen-auth').classList.add('hidden');
+  document.getElementById('screen-main').classList.remove('hidden');
+  document.getElementById('topbarUserLine').textContent = STATE.user.name + ' · ' + STATE.user.role.toUpperCase();
+  buildNav();
+  if(STATE.user.mustChangePassword){ showForceChangePassword(); }
+}
+function navConfigFor(role){
+  if(role==='donor') return [
+    {id:'home', ic:'⌂', label:'home'}, {id:'search', ic:'🔍', label:'search'},
+    {id:'requests', ic:'✉', label:'requests'}, {id:'more', ic:'≡', label:'more'}
+  ];
+  if(role==='organizer') return [
+    {id:'dashboard', ic:'⌂', label:'dashboard'}, {id:'donors', ic:'👥', label:'donors'},
+    {id:'eligibility', ic:'♥', label:'eligibility'}, {id:'requests', ic:'✉', label:'requests'},
+    {id:'more', ic:'≡', label:'more'}
+  ];
+  return [
+    {id:'dashboard', ic:'⌂', label:'dashboard'}, {id:'donors', ic:'👥', label:'donors'},
+    {id:'eligibility', ic:'♥', label:'eligibility'}, {id:'requests', ic:'✉', label:'requests'},
+    {id:'more', ic:'≡', label:'more'}
+  ];
+}
+function buildNav(){
+  const items = navConfigFor(STATE.user.role);
+  document.getElementById('bottomNav').innerHTML = items.map(it=>
+    `<button class="navitem" id="nav-${it.id}" onclick="renderTab('${it.id}')"><span class="ic">${it.ic}</span><span data-i18n="${it.label}">${t(it.label)}</span></button>`
+  ).join('');
+  renderTab(items[0].id);
+}
+function setActiveNav(tab){
+  document.querySelectorAll('.navitem').forEach(el=>el.classList.remove('active'));
+  const el = document.getElementById('nav-'+tab);
+  if(el) el.classList.add('active');
+}
+function renderTab(tab){
+  STATE.tab = tab;
+  setActiveNav(tab);
+  const role = STATE.user.role;
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '<div class="spinner"></div>';
+  const routes = {
+    donor: { home: renderDonorHome, search: renderDonorSearch, requests: renderMyRequests, more: renderDonorMore },
+    organizer: { dashboard: renderOrgDashboard, donors: renderDonorMgmt, eligibility: renderEligibilityBoard, requests: renderRequestsQueue, more: renderOrgMore },
+    admin: { dashboard: renderOrgDashboard, donors: renderDonorMgmt, eligibility: renderEligibilityBoard, requests: renderRequestsQueue, more: renderAdminMore }
+  };
+  (routes[role][tab] || routes[role].home || routes[role].dashboard)();
+  applyI18n();
+}
+
+async function renderDonorHome(){
+  const main = document.getElementById('mainContent');
+  const [donorsRes, settingsRes, myDonRes] = await Promise.all([
+    api('getDonors', {}), api('getSettings', {}), api('getMyDonations', { userId: STATE.user.id })
+  ]);
+  const totalDonors = donorsRes.donors ? donorsRes.donors.length : 0;
+  const eligibleSoonCount = donorsRes.donors ? donorsRes.donors.filter(d=>d.eligibility==='soon'||d.eligibility==='eligible').length : 0;
+  const announcement = settingsRes.settings && settingsRes.settings.announcement;
+  main.innerHTML = `
+    ${announcement ? `<div class="announcement">📢 ${escapeHtml(announcement)}</div>` : ''}
+    <div class="stat-row">
+      <div class="stat"><div class="num">${totalDonors}</div><div class="lbl" data-i18n="totalDonors">Total Donors</div></div>
+      <div class="stat"><div class="num">${myDonRes.totalDonations||0}</div><div class="lbl" data-i18n="totalDonations">My Donations</div></div>
+      <div class="stat"><div class="num">${eligibleSoonCount}</div><div class="lbl" data-i18n="upcomingEligible">Eligible Soon</div></div>
+    </div>
+    <div class="section-title" data-i18n="eligibility">Eligibility</div>
+    <div class="card">
+      <p style="font-size:14px;">
+        <span class="badge ${myDonRes.eligibility}">${t(myDonRes.eligibility==='eligible'?'eligibleNow':myDonRes.eligibility==='soon'?'eligibleSoon':'notYetEligible')}</span>
+      </p>
+      ${myDonRes.nextEligibleDate ? `<p style="margin-top:8px; font-size:12.5px; color:var(--ink-soft);" data-i18n="nextEligible">Next Eligible</p><p style="font-weight:700;">${fmtDate(myDonRes.nextEligibleDate)}</p>` : ''}
+    </div>
+    <div class="section-title">${t('more')}</div>
+    <div class="card" style="display:flex; flex-direction:column; gap:10px;">
+      <button class="btn secondary" onclick="renderTab('search')" data-i18n="searchDonors">Search Donors</button>
+      <button class="btn ghost" onclick="openAboutModal()" data-i18n="about">About</button>
+      <button class="btn ghost" onclick="renderFacebookLink()" data-i18n="facebookPage">Visit Facebook Page</button>
+    </div>
+  `;
+}
+async function renderFacebookLink(){
+  const res = await api('getSettings', {});
+  const url = res.settings && res.settings.facebookUrl;
+  if(url) window.open(url, '_blank');
+  else showToast(STATE.lang==='en'?'Facebook link not set yet':'ফেসবুক লিংক এখনো সেট করা হয়নি');
+}
+function openAboutModal(){
+  openModal(`
+    <h3 data-i18n="about">About</h3>
+    <p style="font-size:14px; line-height:1.6; color:var(--ink-soft);">
+      ${escapeHtml(t('orgName'))} ${STATE.lang==='en' ? 'is a volunteer-run blood donation network connecting willing donors with people in need, while protecting donor privacy.' : 'একটি স্বেচ্ছাসেবক-চালিত রক্তদান নেটওয়ার্ক যা দাতাদের প্রয়োজনীয় ব্যক্তিদের সাথে সংযুক্ত করে, দাতার গোপনীয়তা রক্ষা করে।'}
+    </p>
+    <button class="btn" style="margin-top:16px;" onclick="closeModal()" data-i18n="close">Close</button>
+  `);
+}
+
+let searchFilters = { bloodGroup:'', eligibility:'' };
+async function renderDonorSearch(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="section-title" data-i18n="searchDonors">Search Donors</div>
+    <div class="pill-row" id="bgFilters"></div>
+    <div class="pill-row" id="eligFilters"></div>
+    <div id="searchResults"><div class="spinner"></div></div>
+  `;
+  const bloodGroups = ['','A+','A-','B+','B-','O+','O-','AB+','AB-'];
+  document.getElementById('bgFilters').innerHTML = bloodGroups.map(bg=>
+    `<span class="tag-pill ${searchFilters.bloodGroup===bg?'active':''}" onclick="setSearchFilter('bloodGroup','${bg}')">${bg||'All'}</span>`
+  ).join('');
+  const eligOpts = [{v:'',l:STATE.lang==='en'?'Any status':'যেকোনো অবস্থা'},{v:'eligible',l:t('eligibleNow')},{v:'soon',l:t('eligibleSoon')},{v:'not_yet',l:t('notYetEligible')}];
+  document.getElementById('eligFilters').innerHTML = eligOpts.map(o=>
+    `<span class="tag-pill ${searchFilters.eligibility===o.v?'active':''}" onclick="setSearchFilter('eligibility','${o.v}')">${o.l}</span>`
+  ).join('');
+  runDonorSearch();
+}
+function setSearchFilter(key, val){ searchFilters[key]=val; renderDonorSearch(); }
+async function runDonorSearch(){
+  const res = await api('getDonors', searchFilters);
+  const el = document.getElementById('searchResults');
+  if(res.error){ el.innerHTML = `<div class="empty">${res.error}</div>`; return; }
+  if(!res.donors.length){ el.innerHTML = `<div class="empty"><div class="ic">🔍</div>${t('noResultsFound')}</div>`; return; }
+  el.innerHTML = `<div class="card">` + res.donors.map(d=>`
+    <div class="donor-row">
+      <div class="avatar">${initials(d.name)}</div>
+      <div class="info">
+        <div class="name">${escapeHtml(d.name)} <span class="bg-tag">${d.bloodGroup}</span></div>
+        <div class="meta">${escapeHtml(d.area||'')} ${d.lastDonationMonth?'· '+d.lastDonationMonth:''}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="badge ${d.eligibility}" style="margin-bottom:6px;">${t(d.eligibility==='eligible'?'eligibleNow':d.eligibility==='soon'?'eligibleSoon':'notYetEligible')}</div><br/>
+        <button class="btn small outline" onclick="sendContactRequest('${d.id}')" data-i18n="requestContact" style="font-size:11px;">Request</button>
+      </div>
+    </div>
+  `).join('') + `</div>`;
+}
+async function sendContactRequest(donorId){
+  const res = await api('requestContact', { requesterId: STATE.user.id, targetDonorId: donorId });
+  if(res.error) return showToast(res.error);
+  showToast(t('requestSent'));
+}
+
+async function renderMyRequests(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `<div class="section-title" data-i18n="myRequests">My Requests</div><div id="reqList"><div class="spinner"></div></div>`;
+  const res = await api('getMyRequests', { userId: STATE.user.id });
+  const el = document.getElementById('reqList');
+  if(!res.requests || !res.requests.length){ el.innerHTML = `<div class="empty"><div class="ic">✉</div>${t('noDataYet')}</div>`; return; }
+  el.innerHTML = res.requests.sort((a,b)=>new Date(b.requestedAt)-new Date(a.requestedAt)).map(r=>`
+    <div class="card">
+      <div class="card-header">
+        <strong>${escapeHtml(r.targetDonorName)}</strong>
+        <span class="badge ${r.status}">${t(r.status)}</span>
+      </div>
+      <p style="font-size:12px; color:var(--ink-soft);">${t('requestedOn')}: ${fmtDate(r.requestedAt)}</p>
+      ${r.status==='approved' ? `
+        <div style="margin-top:10px; background:var(--red-soft); border-radius:10px; padding:10px;">
+          <p style="font-size:12px; font-weight:700; color:var(--red-dark);">${t('contactUnlocked')}</p>
+          <p style="font-size:13px; margin-top:4px;">${t('mobileLabel')}: ${escapeHtml(r.targetMobile||'-')}</p>
+          <p style="font-size:13px;">${t('addressLabel')}: ${escapeHtml(r.targetAddress||'-')}</p>
+        </div>` : ''}
+      ${r.status==='rejected' && r.note ? `<p style="font-size:12px; margin-top:6px;">${t('resolvedNote')}: ${escapeHtml(r.note)}</p>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderDonorMore(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="card" style="display:flex; flex-direction:column; gap:2px;">
+      ${moreRow('profile','👤',()=>openProfileModal())}
+      ${moreRow('myDonationHistory','🩸',()=>openMyDonationHistory())}
+      ${moreRow('gallery','🖼',()=>renderGalleryView())}
+      ${moreRow('advisoryBoard','🎓',()=>renderBoardView('Advisory'))}
+      ${moreRow('committee','🧑‍🤝‍🧑',()=>renderBoardView('Committee'))}
+      ${moreRow('quiz','❓',()=>renderQuizList())}
+      ${moreRow('about','ℹ️',()=>openAboutModal())}
+      ${moreRow('facebookPage','📘',()=>renderFacebookLink())}
+      ${moreRow('changePassword','🔒',()=>openChangePasswordModal())}
+    </div>
+  `;
+}
+function moreRow(labelKey, icon, onclick){
+  const id = 'morerow_'+labelKey+Math.random().toString(36).slice(2,7);
+  setTimeout(()=>{ const el=document.getElementById(id); if(el) el.onclick = onclick; },0);
+  return `<button id="${id}" style="display:flex; align-items:center; gap:12px; padding:13px 4px; border:none; background:none; text-align:left; border-bottom:1px solid var(--line); font-size:14px; font-weight:600; color:var(--ink);"><span style="font-size:18px;">${icon}</span><span data-i18n="${labelKey}">${t(labelKey)}</span></button>`;
+}
+function renderOrgMore(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="card" style="display:flex; flex-direction:column; gap:2px;">
+      ${moreRow('profile','👤',()=>openProfileModal())}
+      ${moreRow('photoCardGenerator','🎴',()=>renderPhotoCardGenerator())}
+      ${moreRow('gallery','🖼',()=>renderGalleryMgmt())}
+      ${moreRow('advisoryBoard','🎓',()=>renderBoardView('Advisory'))}
+      ${moreRow('committee','🧑‍🤝‍🧑',()=>renderBoardView('Committee'))}
+      ${moreRow('quizManagement','❓',()=>renderQuizMgmt())}
+      ${moreRow('changePassword','🔒',()=>openChangePasswordModal())}
+    </div>
+  `;
+}
+function renderAdminMore(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="card" style="display:flex; flex-direction:column; gap:2px;">
+      ${moreRow('profile','👤',()=>openProfileModal())}
+      ${moreRow('photoCardGenerator','🎴',()=>renderPhotoCardGenerator())}
+      ${moreRow('gallery','🖼',()=>renderGalleryMgmt())}
+      ${moreRow('advisoryBoard','🎓',()=>renderBoardMgmt('Advisory'))}
+      ${moreRow('committee','🧑‍🤝‍🧑',()=>renderBoardMgmt('Committee'))}
+      ${moreRow('quizManagement','❓',()=>renderQuizMgmt())}
+      ${moreRow('manageOrganizers','🗂',()=>renderOrganizerMgmt())}
+      ${moreRow('settings','⚙️',()=>renderSettingsView())}
+      ${moreRow('exportCsv','⬇️',()=>exportCsv())}
+      ${moreRow('changePassword','🔒',()=>openChangePasswordModal())}
+    </div>
+  `;
+}
+
+function openProfileModal(){
+  const u = STATE.user;
+  openModal(`
+    <h3 data-i18n="editProfile">Edit Profile</h3>
+    <div class="field"><label data-i18n="fullName">Full Name</label><input id="pfName" value="${escapeAttr(u.name)}"></div>
+    <div class="two-col">
+      <div class="field"><label data-i18n="bloodGroup">Blood Group</label>
+        <select id="pfBloodGroup">${['A+','A-','B+','B-','O+','O-','AB+','AB-'].map(bg=>`<option ${u.bloodGroup===bg?'selected':''}>${bg}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label data-i18n="age">Age</label><input id="pfAge" type="number" value="${u.age||''}"></div>
+    </div>
+    <div class="field"><label data-i18n="mobile">Mobile Number</label><input id="pfMobile" value="${escapeAttr(u.mobile||'')}"></div>
+    <div class="field"><label data-i18n="email">Email</label><input id="pfEmail" value="${escapeAttr(u.email||'')}"></div>
+    <div class="field"><label data-i18n="presentAddress">Present Address</label><input id="pfPresentAddress" value="${escapeAttr(u.presentAddress||'')}"></div>
+    <div class="field"><label data-i18n="permanentAddress">Permanent Address</label><input id="pfPermanentAddress" value="${escapeAttr(u.permanentAddress||'')}"></div>
+    <div class="field"><label data-i18n="photoUrl">Photo URL</label><input id="pfPhotoUrl" value="${escapeAttr(u.photoUrl||'')}"></div>
+    <button class="btn" onclick="saveProfile()" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+async function saveProfile(){
+  const updates = {
+    userId: STATE.user.id,
+    name: document.getElementById('pfName').value.trim(),
+    bloodGroup: document.getElementById('pfBloodGroup').value,
+    age: document.getElementById('pfAge').value,
+    mobile: document.getElementById('pfMobile').value.trim(),
+    email: document.getElementById('pfEmail').value.trim(),
+    presentAddress: document.getElementById('pfPresentAddress').value.trim(),
+    permanentAddress: document.getElementById('pfPermanentAddress').value.trim(),
+    photoUrl: document.getElementById('pfPhotoUrl').value.trim()
+  };
+  const res = await api('updateProfile', updates);
+  if(res.error) return showToast(res.error);
+  STATE.user = { ...STATE.user, ...updates };
+  localStorage.setItem('kbdt_user', JSON.stringify(STATE.user));
+  showToast(STATE.lang==='en'?'Profile updated':'প্রোফাইল আপডেট হয়েছে');
+  closeModal();
+  document.getElementById('topbarUserLine').textContent = STATE.user.name + ' · ' + STATE.user.role.toUpperCase();
+}
+function openChangePasswordModal(){
+  openModal(`
+    <h3 data-i18n="changePassword">Change Password</h3>
+    <div class="field"><label data-i18n="currentPassword">Current Password</label><input id="cpOld" type="password"></div>
+    <div class="field"><label data-i18n="newPassword">New Password</label><input id="cpNew" type="password"></div>
+    <button class="btn" onclick="submitChangePassword()" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+async function submitChangePassword(){
+  const oldPassword = document.getElementById('cpOld').value;
+  const newPassword = document.getElementById('cpNew').value;
+  const res = await api('changePassword', { userId: STATE.user.id, oldPassword, newPassword });
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Password changed':'পাসওয়ার্ড পরিবর্তিত হয়েছে');
+  STATE.user.mustChangePassword = false;
+  localStorage.setItem('kbdt_user', JSON.stringify(STATE.user));
+  closeModal();
+}
+function showForceChangePassword(){
+  openModal(`
+    <h3>${STATE.lang==='en'?'Please set a new password':'অনুগ্রহ করে একটি নতুন পাসওয়ার্ড সেট করুন'}</h3>
+    <div class="field"><label data-i18n="currentPassword">Current (temporary) Password</label><input id="cpOld" type="password"></div>
+    <div class="field"><label data-i18n="newPassword">New Password</label><input id="cpNew" type="password"></div>
+    <button class="btn" onclick="submitChangePassword()" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+
+async function openMyDonationHistory(){
+  const res = await api('getMyDonations', { userId: STATE.user.id });
+  openModal(`
+    <h3 data-i18n="myDonationHistory">My Donation History</h3>
+    ${(!res.donations || !res.donations.length) ? `<div class="empty">${t('noDataYet')}</div>` :
+      res.donations.map(d=>`<div class="card"><strong>${fmtDate(d.donationDate)}</strong><p style="font-size:12px; color:var(--ink-soft);">${escapeHtml(d.location||'')}</p>${d.notes?`<p style="font-size:12px;">${escapeHtml(d.notes)}</p>`:''}</div>`).join('')}
+  `);
+}
+
+async function renderGalleryView(){
+  const res = await api('getGallery', {});
+  const items = res.error ? [] : res;
+  openModal(`
+    <h3 data-i18n="gallery">Gallery</h3>
+    ${(!items.length) ? `<div class="empty">${t('noDataYet')}</div>` : `<div class="gallery-grid">${items.map(g=>`<div><img src="${escapeAttr(g.imageUrl)}" onerror="this.style.display='none'"><p style="font-size:11px; margin-top:4px;">${escapeHtml(g.caption||'')}</p></div>`).join('')}</div>`}
+  `);
+}
+
+async function renderBoardView(sheetName){
+  const res = await api(sheetName==='Advisory'?'getAdvisory':'getCommittee', {});
+  const items = Array.isArray(res) ? res : [];
+  openModal(`
+    <h3>${t(sheetName==='Advisory'?'advisoryBoard':'committee')}</h3>
+    ${(!items.length) ? `<div class="empty">${t('noDataYet')}</div>` : items.map(m=>`
+      <div class="member-card">
+        <div class="avatar">${m.photoUrl ? `<img src="${escapeAttr(m.photoUrl)}">` : initials(m.name)}</div>
+        <div><div style="font-weight:700;">${escapeHtml(m.name)}</div><div style="font-size:12px; color:var(--ink-soft);">${escapeHtml(m.designation||m.role||'')}</div></div>
+      </div>
+    `).join('')}
+  `);
+}
+
+async function renderQuizList(){
+  const res = await api('getQuizzes', { requesterRole: STATE.user.role });
+  const quizzes = res.quizzes || [];
+  openModal(`
+    <h3 data-i18n="quiz">Quiz</h3>
+    ${(!quizzes.length) ? `<div class="empty">${t('noDataYet')}</div>` : quizzes.map(q=>`
+      <div class="card">
+        <strong>${escapeHtml(STATE.lang==='bn' && q.titleBn ? q.titleBn : q.titleEn)}</strong>
+        <button class="btn small" style="margin-top:8px;" onclick="startQuiz('${q.id}')" data-i18n="playQuiz">Play Quiz</button>
+      </div>
+    `).join('')}
+  `);
+}
+let currentQuiz = { quizId:null, questions:[], idx:0, score:0 };
+async function startQuiz(quizId){
+  const res = await api('getQuizQuestions', { quizId });
+  currentQuiz = { quizId, questions: res.questions || [], idx:0, score:0 };
+  if(!currentQuiz.questions.length){ showToast(t('noDataYet')); return; }
+  renderQuizQuestion();
+}
+function renderQuizQuestion(){
+  const q = currentQuiz.questions[currentQuiz.idx];
+  const opts = JSON.parse(STATE.lang==='bn' && q.optionsBn && q.optionsBn!=='[]' ? q.optionsBn : q.optionsEn || '[]');
+  openModal(`
+    <h3>${currentQuiz.idx+1} / ${currentQuiz.questions.length}</h3>
+    <p style="font-weight:700; margin-bottom:14px;">${escapeHtml(STATE.lang==='bn' && q.questionBn ? q.questionBn : q.questionEn)}</p>
+    ${opts.map((o,i)=>`<button class="quiz-option" onclick="answerQuiz(${i})">${escapeHtml(o)}</button>`).join('')}
+  `);
+}
+function answerQuiz(i){
+  const q = currentQuiz.questions[currentQuiz.idx];
+  if(Number(q.correctIndex) === i) currentQuiz.score++;
+  currentQuiz.idx++;
+  if(currentQuiz.idx < currentQuiz.questions.length){ renderQuizQuestion(); }
+  else{ finishQuiz(); }
+}
+async function finishQuiz(){
+  await api('submitQuizResult', { quizId: currentQuiz.quizId, userId: STATE.user.id, userName: STATE.user.name, score: currentQuiz.score, totalQuestions: currentQuiz.questions.length });
+  openModal(`
+    <h3 data-i18n="yourScore">Your Score</h3>
+    <p style="font-size:32px; font-weight:800; color:var(--red); text-align:center; margin:20px 0;">${currentQuiz.score} / ${currentQuiz.questions.length}</p>
+    <button class="btn" onclick="closeModal()" data-i18n="close">Close</button>
+  `);
+  applyI18n();
+}
+
+async function renderOrgDashboard(){
+  const main = document.getElementById('mainContent');
+  const [dirRes, reqRes, settingsRes] = await Promise.all([
+    api('getFullDonorDirectory', {}), api('getRequestsQueue', {}), api('getSettings', {})
+  ]);
+  const donors = dirRes.donors || [];
+  const totalDonations = donors.reduce((s,d)=>s+(d.totalDonations||0),0);
+  const pending = (reqRes.requests||[]).length;
+  const bgCounts = {};
+  donors.forEach(d=>{ bgCounts[d.bloodGroup] = (bgCounts[d.bloodGroup]||0)+1; });
+  main.innerHTML = `
+    <div class="stat-row">
+      <div class="stat"><div class="num">${donors.length}</div><div class="lbl" data-i18n="totalDonors">Total Donors</div></div>
+      <div class="stat"><div class="num">${totalDonations}</div><div class="lbl" data-i18n="totalDonations">Total Donations</div></div>
+      <div class="stat"><div class="num">${pending}</div><div class="lbl" data-i18n="requestsQueue">Requests</div></div>
+    </div>
+    <div class="section-title" data-i18n="donors">Donors by Blood Group</div>
+    <div class="card">
+      ${Object.keys(bgCounts).length ? Object.entries(bgCounts).map(([bg,c])=>`
+        <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--line); font-size:13px;">
+          <span class="bg-tag">${bg}</span><strong>${c}</strong>
+        </div>`).join('') : `<div class="empty">${t('noDataYet')}</div>`}
+    </div>
+    <button class="btn secondary" onclick="renderTab('eligibility')" style="margin-top:4px;" data-i18n="eligibilityTracker">Eligibility Tracker</button>
+  `;
+}
+
+async function renderDonorMgmt(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="card-header"><div class="section-title" style="margin:0;" data-i18n="donorManagement">Donor Management</div>
+    <button class="btn small" onclick="openAddDonorModal()" data-i18n="addDonor">Add Donor</button></div>
+    <div id="donorMgmtList"><div class="spinner"></div></div>
+  `;
+  const res = await api('getFullDonorDirectory', {});
+  const el = document.getElementById('donorMgmtList');
+  if(res.error){ el.innerHTML = `<div class="empty">${res.error}</div>`; return; }
+  if(!res.donors.length){ el.innerHTML = `<div class="empty">${t('noDataYet')}</div>`; return; }
+  el.innerHTML = `<div class="card">` + res.donors.map(d=>`
+    <div class="donor-row">
+      <div class="avatar">${d.photoUrl?`<img src="${escapeAttr(d.photoUrl)}">`:initials(d.name)}</div>
+      <div class="info">
+        <div class="name">${escapeHtml(d.name)} <span class="bg-tag">${d.bloodGroup}</span></div>
+        <div class="meta">${escapeHtml(d.mobile||'')} · ${d.totalDonations} donations</div>
+      </div>
+    </div>
+    <div class="list-item-actions">
+      <button class="btn small ghost" onclick="openRecordDonationModal('${d.id}','${escapeAttr(d.name)}')" data-i18n="recordDonation">Record Donation</button>
+      <button class="btn small ghost" onclick="openEditDonorModal('${d.id}')" data-i18n="edit">Edit</button>
+      <button class="btn small outline" onclick="toggleDonorActive('${d.id}', ${d.isActive===false})">${d.isActive===false?t('reactivate'):t('deactivate')}</button>
+    </div>
+  `).join('<hr style="border:none; border-top:1px solid var(--line); margin:8px 0;">') + `</div>`;
+}
+function openAddDonorModal(){
+  openModal(`
+    <h3 data-i18n="addDonor">Add Donor</h3>
+    <div class="field"><label data-i18n="fullName">Full Name</label><input id="adName"></div>
+    <div class="two-col">
+      <div class="field"><label data-i18n="bloodGroup">Blood Group</label><select id="adBloodGroup">${['A+','A-','B+','B-','O+','O-','AB+','AB-'].map(b=>`<option>${b}</option>`).join('')}</select></div>
+      <div class="field"><label data-i18n="age">Age</label><input id="adAge" type="number"></div>
+    </div>
+    <div class="field"><label data-i18n="mobile">Mobile</label><input id="adMobile"></div>
+    <div class="field"><label data-i18n="presentAddress">Present Address</label><input id="adPresentAddress"></div>
+    <button class="btn" onclick="submitAddDonor()" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+async function submitAddDonor(){
+  const payload = {
+    name: document.getElementById('adName').value.trim(),
+    bloodGroup: document.getElementById('adBloodGroup').value,
+    age: document.getElementById('adAge').value,
+    mobile: document.getElementById('adMobile').value.trim(),
+    presentAddress: document.getElementById('adPresentAddress').value.trim()
+  };
+  const res = await api('adminAddDonor', payload);
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Donor added':'দাতা যোগ করা হয়েছে');
+  closeModal(); renderDonorMgmt();
+}
+async function openEditDonorModal(donorId){
+  const dirRes = await api('getFullDonorDirectory', {});
+  const d = (dirRes.donors||[]).find(x=>x.id===donorId);
+  if(!d) return;
+  openModal(`
+    <h3 data-i18n="edit">Edit</h3>
+    <div class="field"><label data-i18n="fullName">Full Name</label><input id="edName" value="${escapeAttr(d.name)}"></div>
+    <div class="two-col">
+      <div class="field"><label data-i18n="bloodGroup">Blood Group</label><select id="edBloodGroup">${['A+','A-','B+','B-','O+','O-','AB+','AB-'].map(b=>`<option ${d.bloodGroup===b?'selected':''}>${b}</option>`).join('')}</select></div>
+      <div class="field"><label data-i18n="age">Age</label><input id="edAge" type="number" value="${d.age||''}"></div>
+    </div>
+    <div class="field"><label data-i18n="mobile">Mobile</label><input id="edMobile" value="${escapeAttr(d.mobile||'')}"></div>
+    <div class="field"><label data-i18n="presentAddress">Present Address</label><input id="edPresentAddress" value="${escapeAttr(d.presentAddress||'')}"></div>
+    <button class="btn" onclick="submitEditDonor('${donorId}')" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+async function submitEditDonor(donorId){
+  const payload = {
+    donorId,
+    name: document.getElementById('edName').value.trim(),
+    bloodGroup: document.getElementById('edBloodGroup').value,
+    age: document.getElementById('edAge').value,
+    mobile: document.getElementById('edMobile').value.trim(),
+    presentAddress: document.getElementById('edPresentAddress').value.trim()
+  };
+  const res = await api('adminUpdateDonor', payload);
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Updated':'আপডেট হয়েছে');
+  closeModal(); renderDonorMgmt();
+}
+async function toggleDonorActive(donorId, reactivate){
+  const res = await api('adminUpdateDonor', { donorId, isActive: reactivate });
+  if(res.error) return showToast(res.error);
+  renderDonorMgmt();
+}
+function openRecordDonationModal(donorId, donorName){
+  const today = new Date().toISOString().slice(0,10);
+  openModal(`
+    <h3 data-i18n="recordDonation">Record Donation</h3>
+    <p style="font-weight:700; margin-bottom:10px;">${escapeHtml(donorName)}</p>
+    <div class="field"><label data-i18n="donationDate">Donation Date</label><input id="rdDate" type="date" value="${today}"></div>
+    <div class="field"><label data-i18n="location">Location</label><input id="rdLocation"></div>
+    <div class="field"><label data-i18n="notes">Notes</label><textarea id="rdNotes" rows="2"></textarea></div>
+    <button class="btn" onclick="submitRecordDonation('${donorId}')" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+async function submitRecordDonation(donorId){
+  const payload = { donorId, donationDate: document.getElementById('rdDate').value, location: document.getElementById('rdLocation').value.trim(), notes: document.getElementById('rdNotes').value.trim() };
+  const res = await api('recordDonation', payload);
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Donation recorded':'রক্তদান রেকর্ড হয়েছে');
+  closeModal(); renderDonorMgmt();
+}
+
+async function renderEligibilityBoard(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `<div class="section-title" data-i18n="eligibilityTracker">Eligibility Tracker</div><div id="eligBoard"><div class="spinner"></div></div>`;
+  const res = await api('getEligibilityBoard', {});
+  const el = document.getElementById('eligBoard');
+  if(res.error){ el.innerHTML = `<div class="empty">${res.error}</div>`; return; }
+  const groups = Object.keys(res.board);
+  el.innerHTML = groups.map(bg=>{
+    const list = res.board[bg];
+    if(!list.length) return '';
+    return `<div class="card"><div class="card-header"><span class="bg-tag">${bg}</span><span style="font-size:12px; color:var(--ink-soft);">${list.length}</span></div>
+      ${list.map(d=>`<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--line); font-size:13px;">
+        <span>${escapeHtml(d.name)}</span><span class="badge ${d.status}">${t(d.status==='eligible'?'eligibleNow':d.status==='soon'?'eligibleSoon':'notYetEligible')}</span>
+      </div>`).join('')}
+    </div>`;
+  }).join('') || `<div class="empty">${t('noDataYet')}</div>`;
+}
+
+async function renderRequestsQueue(){
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `<div class="section-title" data-i18n="requestsQueue">Requests Queue</div><div id="reqQueue"><div class="spinner"></div></div>`;
+  const res = await api('getRequestsQueue', {});
+  const el = document.getElementById('reqQueue');
+  if(!res.requests || !res.requests.length){ el.innerHTML = `<div class="empty">${t('noDataYet')}</div>`; return; }
+  el.innerHTML = res.requests.map(r=>`
+    <div class="card">
+      <p style="font-size:13px;"><strong>${escapeHtml(r.requesterName)}</strong> ${STATE.lang==='en'?'wants contact info for':'যোগাযোগের তথ্য চেয়েছেন'} <strong>${escapeHtml(r.targetDonorName)}</strong></p>
+      <p style="font-size:11px; color:var(--ink-soft); margin-top:4px;">${fmtDate(r.requestedAt)}</p>
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn small secondary" style="flex:1;" onclick="resolveReq('${r.id}', true)" data-i18n="approve">Approve</button>
+        <button class="btn small outline" style="flex:1;" onclick="resolveReq('${r.id}', false)" data-i18n="reject">Reject</button>
+      </div>
+    </div>
+  `).join('');
+}
+async function resolveReq(requestId, approve){
+  const res = await api('resolveRequest', { requestId, approve });
+  if(res.error) return showToast(res.error);
+  renderRequestsQueue();
+}
+
+async function renderGalleryMgmt(){
+  const res = await api('getGallery', {});
+  const items = Array.isArray(res) ? res : [];
+  openModal(`
+    <h3 data-i18n="gallery">Gallery</h3>
+    <div class="field"><label data-i18n="photoUrl">Photo URL</label><input id="gImageUrl"></div>
+    <div class="field"><label>${STATE.lang==='en'?'Caption':'ক্যাপশন'}</label><input id="gCaption"></div>
+    <button class="btn small" onclick="submitGalleryItem()" style="margin-bottom:14px;">${STATE.lang==='en'?'Add Photo':'ছবি যোগ করুন'}</button>
+    <div class="gallery-grid">
+      ${items.map(g=>`<div><img src="${escapeAttr(g.imageUrl)}" onerror="this.style.display='none'"><button class="btn small outline" style="margin-top:4px; width:100%;" onclick="deleteGallery('${g.id}')" data-i18n="delete">Delete</button></div>`).join('')}
+    </div>
+  `);
+  applyI18n();
+}
+async function submitGalleryItem(){
+  const imageUrl = document.getElementById('gImageUrl').value.trim();
+  const caption = document.getElementById('gCaption').value.trim();
+  if(!imageUrl) return showToast('Image URL required');
+  const res = await api('addGalleryItem', { imageUrl, caption });
+  if(res.error) return showToast(res.error);
+  renderGalleryMgmt();
+}
+async function deleteGallery(id){
+  await api('deleteGalleryItem', { id });
+  renderGalleryMgmt();
+}
+
+async function renderBoardMgmt(sheetName){
+  const res = await api(sheetName==='Advisory'?'getAdvisory':'getCommittee', {});
+  const items = Array.isArray(res) ? res : [];
+  const roleLabel = sheetName==='Advisory' ? 'designation' : 'role';
+  openModal(`
+    <h3>${t(sheetName==='Advisory'?'advisoryBoard':'committee')}</h3>
+    <div class="field"><label data-i18n="name">Name</label><input id="bmName"></div>
+    <div class="field"><label data-i18n="${roleLabel}">${t(roleLabel)}</label><input id="bmRole"></div>
+    <div class="field"><label data-i18n="photoUrl">Photo URL</label><input id="bmPhotoUrl"></div>
+    <button class="btn small" onclick="submitBoardMember('${sheetName}','${roleLabel}')" style="margin-bottom:14px;" data-i18n="addMember">Add Member</button>
+    ${items.map(m=>`
+      <div class="member-card">
+        <div class="avatar">${m.photoUrl?`<img src="${escapeAttr(m.photoUrl)}">`:initials(m.name)}</div>
+        <div style="flex:1;"><div style="font-weight:700;">${escapeHtml(m.name)}</div><div style="font-size:12px; color:var(--ink-soft);">${escapeHtml(m.designation||m.role||'')}</div></div>
+        <button class="btn small outline" onclick="deleteBoardMemberUi('${sheetName}','${m.id}')" data-i18n="delete">Delete</button>
+      </div>
+    `).join('')}
+  `);
+  applyI18n();
+}
+async function submitBoardMember(sheetName, roleLabel){
+  const name = document.getElementById('bmName').value.trim();
+  const roleVal = document.getElementById('bmRole').value.trim();
+  const photoUrl = document.getElementById('bmPhotoUrl').value.trim();
+  const payload = { name, photoUrl };
+  payload[roleLabel] = roleVal;
+  const res = await api(sheetName==='Advisory'?'addAdvisory':'addCommittee', payload);
+  if(res.error) return showToast(res.error);
+  renderBoardMgmt(sheetName);
+}
+async function deleteBoardMemberUi(sheetName, id){
+  await api(sheetName==='Advisory'?'deleteAdvisory':'deleteCommittee', { id });
+  renderBoardMgmt(sheetName);
+}
+
+async function renderPhotoCardGenerator(){
+  const dirRes = await api('getFullDonorDirectory', {});
+  const donors = dirRes.donors || [];
+  openModal(`
+    <h3 data-i18n="photoCardGenerator">Photo Card Generator</h3>
+    <div class="field"><label data-i18n="fullName">Donor</label>
+      <select id="pcDonor">${donors.map(d=>`<option value="${d.id}">${escapeHtml(d.name)} (${d.bloodGroup})</option>`).join('')}</select>
+    </div>
+    <div class="field"><label data-i18n="donationDate">Donation Date</label><input id="pcDate" type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+    <div class="field"><label data-i18n="place">Place / Location</label><input id="pcPlace"></div>
+    <div class="field"><label data-i18n="quote">Message / Quote (optional)</label><input id="pcQuote"></div>
+    <button class="btn" onclick="generatePhotoCard()" data-i18n="generateCard">Generate Card</button>
+    <div id="pcPreview" style="margin-top:16px;"></div>
+  `);
+  applyI18n();
+}
+async function generatePhotoCard(){
+  const donorId = document.getElementById('pcDonor').value;
+  const donorName = document.getElementById('pcDonor').selectedOptions[0].textContent;
+  const date = document.getElementById('pcDate').value;
+  const place = document.getElementById('pcPlace').value.trim();
+  const quote = document.getElementById('pcQuote').value.trim();
+  const [numRes, totalRes] = await Promise.all([ api('getDonorDonationNumber', { donorId }), api('getTotalOrgDonations', {}) ]);
+  document.getElementById('pcPreview').innerHTML = `
+    <div class="photocard-preview">
+      <div class="drop-lg" style="width:40px; height:40px; margin-bottom:10px;"></div>
+      <h2>${escapeHtml(donorName)}</h2>
+      <div class="num">#${numRes.donationNumber}</div>
+      <div class="sub">${t('donationNumber')} · ${fmtDate(date)}</div>
+      ${place ? `<div class="sub" style="margin-top:6px;">${escapeHtml(place)}</div>` : ''}
+      ${quote ? `<div class="sub" style="margin-top:10px; font-style:italic;">"${escapeHtml(quote)}"</div>` : ''}
+      <div class="sub" style="margin-top:14px; border-top:1px solid rgba(255,255,255,.3); padding-top:8px;">${t('orgName')} · ${STATE.lang==='en'?'Total org donations':'মোট সংস্থার দান'}: ${totalRes.total}</div>
+    </div>
+    <p style="font-size:11px; color:var(--ink-soft); text-align:center;">${STATE.lang==='en'?"Screenshot this card to share, or use your phone's share/print-to-PDF option.":'শেয়ার করতে এই কার্ডের স্ক্রিনশট নিন, অথবা আপনার ফোনের শেয়ার/প্রিন্ট-টু-পিডিএফ অপশন ব্যবহার করুন।'}</p>
+  `;
+}
+
+async function renderQuizMgmt(){
+  const res = await api('getQuizzes', { requesterRole: STATE.user.role });
+  const quizzes = res.quizzes || [];
+  openModal(`
+    <h3 data-i18n="quizManagement">Quiz Management</h3>
+    <div class="field"><label>${STATE.lang==='en'?'Quiz Title (EN)':'কুইজ শিরোনাম (ইংরেজি)'}</label><input id="qzTitleEn"></div>
+    <div class="field"><label>${STATE.lang==='en'?'Quiz Title (BN)':'কুইজ শিরোনাম (বাংলা)'}</label><input id="qzTitleBn"></div>
+    <button class="btn small" onclick="submitCreateQuiz()" style="margin-bottom:14px;" data-i18n="createQuiz">Create Quiz</button>
+    ${quizzes.map(q=>`
+      <div class="card">
+        <div class="card-header"><strong>${escapeHtml(q.titleEn)}</strong>
+          <span class="badge ${q.isPublished===true||q.isPublished==='TRUE'?'approved':'pending'}">${q.isPublished===true||q.isPublished==='TRUE'?t('publish'):t('unpublish')}</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn small ghost" style="flex:1;" onclick="openAddQuestionModal('${q.id}')" data-i18n="addQuestion">Add Question</button>
+          <button class="btn small outline" style="flex:1;" onclick="togglePublish('${q.id}', ${!(q.isPublished===true||q.isPublished==='TRUE')})">${(q.isPublished===true||q.isPublished==='TRUE')?t('unpublish'):t('publish')}</button>
+        </div>
+      </div>
+    `).join('')}
+  `);
+  applyI18n();
+}
+async function submitCreateQuiz(){
+  const titleEn = document.getElementById('qzTitleEn').value.trim();
+  const titleBn = document.getElementById('qzTitleBn').value.trim();
+  if(!titleEn) return showToast('Title required');
+  const res = await api('createQuiz', { titleEn, titleBn });
+  if(res.error) return showToast(res.error);
+  renderQuizMgmt();
+}
+async function togglePublish(quizId, publish){
+  await api('togglePublishQuiz', { quizId, publish });
+  renderQuizMgmt();
+}
+function openAddQuestionModal(quizId){
+  openModal(`
+    <h3 data-i18n="addQuestion">Add Question</h3>
+    <div class="field"><label>${STATE.lang==='en'?'Question (EN)':'প্রশ্ন (ইংরেজি)'}</label><input id="qQuestionEn"></div>
+    <div class="field"><label>${STATE.lang==='en'?'Options (comma separated)':'অপশনসমূহ (কমা দিয়ে আলাদা)'}</label><input id="qOptionsEn" placeholder="Option A, Option B, Option C"></div>
+    <div class="field"><label>${STATE.lang==='en'?'Correct option number (1,2,3...)':'সঠিক অপশন নম্বর (১,২,৩...)'}</label><input id="qCorrectIndex" type="number" min="1"></div>
+    <button class="btn" onclick="submitAddQuestion('${quizId}')" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+async function submitAddQuestion(quizId){
+  const questionEn = document.getElementById('qQuestionEn').value.trim();
+  const optionsEn = document.getElementById('qOptionsEn').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const correctIndex = Number(document.getElementById('qCorrectIndex').value) - 1;
+  if(!questionEn || !optionsEn.length) return showToast('Fill all fields');
+  const res = await api('addQuestion', { quizId, questionEn, optionsEn, correctIndex });
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Question added':'প্রশ্ন যোগ করা হয়েছে');
+  closeModal();
+}
+
+async function renderOrganizerMgmt(){
+  const res = await api('listOrganizers', {});
+  const organizers = res.organizers || [];
+  openModal(`
+    <h3 data-i18n="manageOrganizers">Manage Organizers</h3>
+    <div class="field"><label data-i18n="username">Username</label><input id="orgUsername"></div>
+    <div class="field"><label data-i18n="tempPassword">Temporary Password</label><input id="orgTempPassword"></div>
+    <button class="btn small" onclick="submitCreateOrganizer()" style="margin-bottom:14px;" data-i18n="addOrganizer">Add Organizer</button>
+    ${organizers.map(o=>`
+      <div class="donor-row">
+        <div class="avatar">${initials(o.name)}</div>
+        <div class="info"><div class="name">${escapeHtml(o.name)}</div><div class="meta">${o.isActive===false?t('deactivate'):t('isActive')}</div></div>
+        <button class="btn small outline" onclick="deactivateOrg('${o.id}')" data-i18n="deactivate">Deactivate</button>
+      </div>
+    `).join('') || `<div class="empty">${t('noDataYet')}</div>`}
+  `);
+  applyI18n();
+}
+async function submitCreateOrganizer(){
+  const username = document.getElementById('orgUsername').value.trim();
+  const tempPassword = document.getElementById('orgTempPassword').value;
+  if(!username || !tempPassword) return showToast('Fill all fields');
+  const res = await api('createOrganizer', { username, tempPassword });
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Organizer created':'অর্গানাইজার তৈরি হয়েছে');
+  renderOrganizerMgmt();
+}
+async function deactivateOrg(organizerId){
+  await api('deactivateOrganizer', { organizerId });
+  renderOrganizerMgmt();
+}
+
+async function renderSettingsView(){
+  const res = await api('getSettings', {});
+  const s = res.settings || {};
+  openModal(`
+    <h3 data-i18n="settings">Settings</h3>
+    <div class="field"><label data-i18n="orgName">Organization Name</label><input id="stOrgName" value="${escapeAttr(s.orgName||'')}"></div>
+    <div class="field"><label data-i18n="facebookPage">Facebook URL</label><input id="stFacebookUrl" value="${escapeAttr(s.facebookUrl||'')}"></div>
+    <div class="field"><label data-i18n="orgAnnouncement">Announcement</label><textarea id="stAnnouncement" rows="2">${escapeHtml(s.announcement||'')}</textarea></div>
+    <button class="btn" onclick="submitSettings()" data-i18n="save">Save</button>
+  `);
+  applyI18n();
+}
+async function submitSettings(){
+  const settings = {
+    orgName: document.getElementById('stOrgName').value.trim(),
+    facebookUrl: document.getElementById('stFacebookUrl').value.trim(),
+    announcement: document.getElementById('stAnnouncement').value.trim()
+  };
+  const res = await api('updateSettings', { settings });
+  if(res.error) return showToast(res.error);
+  showToast(STATE.lang==='en'?'Settings saved':'সেটিংস সংরক্ষিত হয়েছে');
+  closeModal();
+}
+async function exportCsv(){
+  const res = await api('exportDonorsCsv', {});
+  if(res.error) return showToast(res.error);
+  const blob = new Blob([res.csv], { type:'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'kbdt-donors.csv'; a.click();
+}
+
+function initials(name){ return (name||'').split(' ').filter(Boolean).slice(0,2).map(s=>s[0].toUpperCase()).join(''); }
+function fmtDate(iso){ if(!iso) return '-'; const d = new Date(iso); return d.toLocaleDateString(STATE.lang==='bn'?'bn-BD':'en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+function escapeHtml(str){ if(str===undefined||str===null) return ''; return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function escapeAttr(str){ return escapeHtml(str); }
+
+applyI18n();
+if(CONFIG.API_URL === 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
+  showToast('⚠️ Set CONFIG.API_URL in index.html to your Apps Script Web App URL');
+}
+if(STATE.user){ enterApp(); }
+</script>
+</body>
+</html>
