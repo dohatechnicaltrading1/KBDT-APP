@@ -616,8 +616,35 @@ function renderAdminMore(){
 
 function openProfileModal(){
   const u = STATE.user;
+  const photoBlock = u.photoUrl ? `<img src="${escapeAttr(u.photoUrl)}">` : initials(u.name);
+  openModal(`
+    <div style="text-align:center; margin-bottom:16px;">
+      <div class="avatar" style="width:84px;height:84px;font-size:26px;margin:0 auto 10px;">${photoBlock}</div>
+      <h3 style="margin-bottom:4px;">${escapeHtml(u.name)}</h3>
+      <span class="role-badge ${u.role}">${u.role}</span>
+      ${u.bloodGroup ? `<span class="bg-tag" style="margin-left:6px;">${u.bloodGroup}</span>` : ''}
+    </div>
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:13px;"><span style="color:var(--ink-soft);" data-i18n="mobile">Mobile</span><span>${escapeHtml(u.mobile||'-')}</span></div>
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:13px;"><span style="color:var(--ink-soft);" data-i18n="email">Email</span><span>${escapeHtml(u.email||'-')}</span></div>
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:13px;"><span style="color:var(--ink-soft);" data-i18n="age">Age</span><span>${escapeHtml(u.age||'-')}</span></div>
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:13px;"><span style="color:var(--ink-soft);" data-i18n="presentAddress">Present Address</span><span style="text-align:right; max-width:60%;">${escapeHtml(u.presentAddress||'-')}</span></div>
+      <div style="display:flex; justify-content:space-between; padding:6px 0; font-size:13px;"><span style="color:var(--ink-soft);" data-i18n="permanentAddress">Permanent Address</span><span style="text-align:right; max-width:60%;">${escapeHtml(u.permanentAddress||'-')}</span></div>
+    </div>
+    <button class="btn" onclick="openEditProfileModal()" data-i18n="editProfile">Edit Profile</button>
+  `);
+  applyI18n();
+}
+
+function openEditProfileModal(){
+  const u = STATE.user;
   openModal(`
     <h3 data-i18n="editProfile">Edit Profile</h3>
+    <div style="text-align:center; margin-bottom:14px;">
+      <div class="avatar" id="pfAvatarPreview" style="width:84px;height:84px;font-size:26px;margin:0 auto 10px;">${u.photoUrl?`<img src="${escapeAttr(u.photoUrl)}">`:initials(u.name)}</div>
+      <input type="file" id="pfPhotoFile" accept="image/*" onchange="handleProfilePhotoChange(event)" style="font-size:12px;">
+      <input type="hidden" id="pfPhotoUrl" value="${escapeAttr(u.photoUrl||'')}">
+    </div>
     <div class="field"><label data-i18n="fullName">Full Name</label><input id="pfName" value="${escapeAttr(u.name)}"></div>
     <div class="two-col">
       <div class="field"><label data-i18n="bloodGroup">Blood Group</label>
@@ -629,11 +656,34 @@ function openProfileModal(){
     <div class="field"><label data-i18n="email">Email</label><input id="pfEmail" value="${escapeAttr(u.email||'')}"></div>
     <div class="field"><label data-i18n="presentAddress">Present Address</label><input id="pfPresentAddress" value="${escapeAttr(u.presentAddress||'')}"></div>
     <div class="field"><label data-i18n="permanentAddress">Permanent Address</label><input id="pfPermanentAddress" value="${escapeAttr(u.permanentAddress||'')}"></div>
-    <div class="field"><label data-i18n="photoUrl">Photo URL</label><input id="pfPhotoUrl" value="${escapeAttr(u.photoUrl||'')}"></div>
     <button class="btn" onclick="saveProfile()" data-i18n="save">Save</button>
   `);
   applyI18n();
 }
+
+function handleProfilePhotoChange(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const maxDim = 220;
+      let w = img.width, h = img.height;
+      if(w > h && w > maxDim){ h = h*(maxDim/w); w = maxDim; }
+      else if(h > maxDim){ w = w*(maxDim/h); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+      document.getElementById('pfPhotoUrl').value = dataUrl;
+      document.getElementById('pfAvatarPreview').innerHTML = `<img src="${dataUrl}">`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 async function saveProfile(){
   const updates = {
     userId: STATE.user.id,
